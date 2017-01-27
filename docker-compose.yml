@@ -1,0 +1,32 @@
+version: '2'
+services:
+  seafile:
+    image: sabaitech/seafile
+    container_name: seafile
+    ports:
+     - "8000:8000"
+     - "8082:8082"
+    environment:
+     - MYSQL_SERVER=mariadb
+     - MYSQL_USER=$SEAFILE_USER
+     - MYSQL_USER_PASSWORD=$SEAFILE_PASSWORD
+     - MYSQL_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
+     - SEAFILE_ADMIN=$SEAFILE_ADMIN
+     - SEAFILE_ADMIN_PASSWORD=$SEAFILE_ADMIN_PASSWORD
+    volumes:
+     - ./seafile:/seafile
+    depends_on:
+     - mariadb
+
+  mariadb:
+    image: mariadb:10.1
+    container_name: mariadb
+    ports:
+     - "3306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
+      - MYSQL_DATABASE=$SEAFILE_USER
+      - MYSQL_USER=$SEAFILE_USER
+      - MYSQL_PASSWORD=$SEAFILE_PASSWORD
+    volumes:
+      - ./mysql/db:/var/lib/mysql
