@@ -1,16 +1,12 @@
 #!/bin/bash
 
-. /usr/local/bin/env.sh
+. /usr/local/bin/seafile_env.sh
 
 EXPOSED_DIRS="ccnet conf logs seafile-data seahub-data"
 EXPOSED_ROOT_DIR=${EXPOSED_ROOT_DIR:-"/seafile"}
 
 setup_seafile(){
 	echo "Setting up seafile server ..."
-	check_require "MYSQL_SERVER" $MYSQL_SERVER
-	check_require "MYSQL_ROOT_PASSWORD" $MYSQL_ROOT_PASSWORD
-	check_require "MYSQL_USER" $MYSQL_USER
-	check_require "MYSQL_USER_PASSWORD" $MYSQL_USER_PASSWORD
 	check_require "SEAFILE_ADMIN" $SEAFILE_ADMIN
 	check_require "SEAFILE_ADMIN_PASSWORD" $SEAFILE_ADMIN_PASSWORD
 
@@ -32,7 +28,7 @@ setup_seafile(){
 	echo "Setting up seahub ..."
   setup_seahub
 
-  echo "Create exposed directory ..."
+  echo "Create exposed directories ..."
   setup_exposed_directories
 }
 
@@ -51,12 +47,23 @@ setup_seahub(){
 }
 
 wait_for_db() {
+	echo "Waiting for the DB server is up ..."
 	DOCKERIZE_TIMEOUT=${DOCKERIZE_TIMEOUT:-"60s"}
 	dockerize -timeout ${DOCKERIZE_TIMEOUT} -wait tcp://${MYSQL_SERVER}:${MYSQL_PORT:-3306}
 	if [[ $? -ne 0 ]]; then
 		echo "Cannot connect to the DB server"
 		exit 1
 	fi
+	echo "DB server is OK"
+}
+
+check_required_params() {
+	echo "Checking required params..."
+	check_require "MYSQL_SERVER" $MYSQL_SERVER
+	check_require "MYSQL_ROOT_PASSWORD" $MYSQL_ROOT_PASSWORD
+	check_require "MYSQL_USER" $MYSQL_USER
+	check_require "MYSQL_USER_PASSWORD" $MYSQL_USER_PASSWORD
+	echo "Required params OK"
 }
 
 setup_exposed_directories() {
@@ -74,6 +81,33 @@ setup_exposed_directories() {
 	done
 }
 
+is_new_install(){
+	DIR_COUNTER=0
+	MISSING_DIR=""
+	for EXPOSED_DIR in $EXPOSED_DIRS
+	do
+		if [[ -d "$EXPOSED_ROOT_DIR/$EXPOSED_DIR" ]]; then
+			DIR_COUNTER=$((DIR_COUNTER+1))
+		else
+			MISSING_DIR="$MISSING_DIR $EXPOSED_DIR"
+		fi
+	done
+	if [[ $DIR_COUNTER -gt 0 && $DIR_COUNTER -lt $(wc -w <<< "$EXPOSED_DIRS") ]]; then
+		echo "Inconsistent state. Following directories are missing to restore previous install: $MISSING_DIR"
+    exit 1
+	fi
+	return $DIR_COUNTER
+}
+
+restore_install(){
+	echo "Restoring previous install"
+  for EXPOSED_DIR in $EXPOSED_DIRS
+  do
+    ln -sf "$EXPOSED_ROOT_DIR/$EXPOSED_DIR" "$SEAFILE_ROOT_DIR/$EXPOSED_DIR"
+  done
+	ln -sf "$SERVER_DIR" "$LATEST_SERVER_DIR"
+}
+
 control_seafile() {
 	"$SERVER_DIR"/seafile.sh "$@"
 }
@@ -84,21 +118,20 @@ control_seahub() {
 
 check_require() {
 	if [[ -z ${2//[[:blank:]]/} ]]; then
-		echo "$1 is require"
+		echo "$1 is required"
 		exit 1
 	fi
 }
 
-
-echo "Waiting for the DB server is up ..."
-wait_for_db
-echo "DB server OK"
-
-echo "Installing Seafile ..."
 if [[ ! -e $LATEST_SERVER_DIR ]]; then
-	echo "Installing Seafile ..."
-	setup_seafile
-	echo "Installation done"
+	wait_for_db
+	check_required_params
+	if is_new_install; then
+		setup_seafile
+	else
+	  restore_install
+	fi
+	echo "Done. Starting seafile"
 fi
 
 exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf

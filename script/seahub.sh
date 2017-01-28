@@ -1,6 +1,6 @@
 #!/bin/bash
 
-. /usr/local/bin/env.sh
+. /usr/local/bin/seafile_env.sh
 
 RESULT=1
 
