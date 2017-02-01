@@ -25,7 +25,6 @@ services:
      - "3306:3306"
     environment:
       - MYSQL_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
-      - MYSQL_DATABASE=$SEAFILE_USER
       - MYSQL_USER=$SEAFILE_USER
       - MYSQL_PASSWORD=$SEAFILE_PASSWORD
     volumes:
