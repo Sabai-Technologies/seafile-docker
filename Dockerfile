@@ -26,12 +26,12 @@ COPY ["script", "/usr/local/bin/"]
 COPY ["supervisor", "/etc/supervisor/"]
 
 RUN \
-    useradd -r -s /bin/false seafile  \
-    && mkdir $SEAFILE_ROOT_DIR $EXPOSED_ROOT_DIR \
+    useradd -r -m -s /bin/false seafile  \
+    && mkdir $SEAFILE_ROOT_DIR \
     && wget --no-check-certificate -qO - $(echo $SEAFILE_URL_PATTERN | sed "s/VERSION/$SEAFILE_VERSION/") | tar xz -C $SEAFILE_ROOT_DIR \
     && wget --no-check-certificate -qO- $(wget --no-check-certificate -nv -qO- https://api.github.com/repos/jwilder/dockerize/releases/latest \
                 | grep -E 'browser_.*dockerize-linux-amd64' | cut -d\" -f4) | tar xzv -C /usr/local/bin/ \
-    && chown seafile:seafile -R $SEAFILE_ROOT_DIR $EXPOSED_ROOT_DIR \
+    && chown seafile:seafile -R $SEAFILE_ROOT_DIR \
     && chown :seafile -R /usr/local/bin/ && chmod 770 -R /usr/local/bin/
 
 USER seafile
