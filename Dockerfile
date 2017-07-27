@@ -2,8 +2,8 @@ FROM debian:jessie
 ENV \
     EXPOSED_ROOT_DIR="/home/seafile" \
     SEAFILE_ROOT_DIR="/opt/seafile" \
-    SEAFILE_VERSION=6.0.7 \
-    SEAFILE_URL_PATTERN=https://bintray.com/artifact/download/seafile-org/seafile/seafile-server_VERSION_x86-64.tar.gz
+    SEAFILE_VERSION=6.1.1 \
+    SEAFILE_URL_PATTERN=https://download.seadrive.org/seafile-server_VERSION_x86-64.tar.gz
 
 RUN \
     DEBIAN_FRONTEND=noninteractive \

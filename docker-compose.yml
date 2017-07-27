@@ -1,7 +1,7 @@
 version: '2'
 services:
   seafile:
-    image: sabaitech/seafile
+    image: sabaitech/seafile:6.1.1
     container_name: seafile
     ports:
      - "8000:8000"
