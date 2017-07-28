@@ -14,7 +14,7 @@ services:
      - SEAFILE_ADMIN=$SEAFILE_ADMIN
      - SEAFILE_ADMIN_PASSWORD=$SEAFILE_ADMIN_PASSWORD
     volumes:
-     - ./seafile:/home/seafile
+     - ./seafile:/seafile
     depends_on:
      - mariadb
 

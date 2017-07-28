@@ -2,7 +2,7 @@
 
 . /usr/local/bin/seafile_env.sh
 
-EXPOSED_DIRS="ccnet conf logs seafile-data seahub-data"
+EXPOSED_DIRS="conf logs seafile-data seahub-data"
 EXPOSED_ROOT_DIR=${EXPOSED_ROOT_DIR:-"/seafile"}
 
 RED='\033[0;31m'

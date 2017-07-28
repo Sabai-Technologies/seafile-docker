@@ -11,8 +11,9 @@ Seafile docker image based on Debian
 
 ## Supported tags ##
 Tags of this image follow Seafile version:
-* 6.0.7 - Seafile server 6.0.7
 * latest - Development build based on the latest Seafile version
+* 6.1.1 - Seafile server 6.1.1
+* 6.0.7 - Seafile server 6.0.7
 
 ## Detailed Configuration ##
 - #### Ports ####
@@ -21,26 +22,26 @@ Tags of this image follow Seafile version:
 
 - #### Volume ####
 
-  - This image exposes only volume: /home/seafile/
+  - This image exposes only one volume
+    * version 6.0.7 -> /home/seafile/
+    * from version 6.1.1 -> /seafile
 
-  - Structure of the directory:
+  - Directory Structure
   ```
-        /home/seafile/
-              ├── ccnet
-              │   └── seafile.ini
-              ├── conf
-              │   ├── ccnet.conf
-              │   ├── seafdav.conf
-              │   ├── seafile.conf
-              │   ├── seahub_settings.py
-              │   └── seahub_settings.pyc
-              ├── logs
-              │   ├── ccnet.log
-              │   ├── controller.log
-              │   ├── seafile.log
-              │   ├── seahub.log
-              │   └── seahub_django_request.log
-              ├── seafile-data
+      seafile/
+          ├── conf
+          │   ├── ccnet.conf
+          │   ├── seafdav.conf
+          │   ├── seafile.conf
+          │   ├── seahub_settings.py
+          │   └── seahub_settings.pyc
+          ├── logs
+          │   ├── ccnet.log
+          │   ├── controller.log
+          │   ├── seafile.log
+          │   ├── seahub.log
+          │   └── seahub_django_request.log
+          ├── seafile-data
 ```
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
@@ -108,7 +109,7 @@ and just run ```docker-compose up -d```
 ## Restoring a previous installation ##
 
  If you already have a previous installation of Seafile server (including non docker installation) and want to use this image you just have to:
-   1. Put ```ccnet```, ```conf```, ```logs```, ```seafile-data``` directories in the associated volume
+   1. Put ```conf```, ```logs```, ```seafile-data``` directories in the associated volume
    2. Run ```docker-compose up -d```
 
 
