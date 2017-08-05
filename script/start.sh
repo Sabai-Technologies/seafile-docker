@@ -1,8 +1,9 @@
 #!/bin/bash
 
+
 . /usr/local/bin/seafile_env.sh
 
-EXPOSED_DIRS="conf logs seafile-data seahub-data"
+EXPOSED_DIRS="conf ccnet logs seafile-data seahub-data"
 EXPOSED_ROOT_DIR=${EXPOSED_ROOT_DIR:-"/seafile"}
 
 RED='\033[0;31m'
@@ -18,10 +19,10 @@ setup_seafile(){
 	    -n "${SERVER_NAME:-"seafile"}" \
 	    -i "127.0.0.1" \
 	    -p 8082 \
-			-e 0 \
+		-e 0 \
 	    -o "${MYSQL_SERVER}" \
 	    -t "${MYSQL_PORT:-3306}" \
-			-r "${MYSQL_ROOT_PASSWORD}" \
+		-r "${MYSQL_ROOT_PASSWORD}" \
 	    -u "${MYSQL_USER}" \
 	    -w "${MYSQL_USER_PASSWORD}" \
 	    -q "%" \
@@ -31,7 +32,7 @@ setup_seafile(){
 
 	log_info "Seafile server is successfully configured"
 	setup_seahub
-  setup_exposed_directories
+    setup_exposed_directories
 	link_exposed_directories
 }
 
@@ -84,9 +85,9 @@ setup_exposed_directories() {
 
 link_exposed_directories() {
 	for EXPOSED_DIR in $EXPOSED_DIRS
-  do
-    ln -sf "$EXPOSED_ROOT_DIR/$EXPOSED_DIR" "$SEAFILE_ROOT_DIR/$EXPOSED_DIR"
-  done
+    do
+        ln -sf "$EXPOSED_ROOT_DIR/$EXPOSED_DIR" "$SEAFILE_ROOT_DIR/$EXPOSED_DIR"
+    done
 }
 
 is_new_install(){
@@ -102,7 +103,7 @@ is_new_install(){
 	done
 	if [[ $DIR_COUNTER -gt 0 && $DIR_COUNTER -lt $(wc -w <<< "$EXPOSED_DIRS") ]]; then
 		log_error "Inconsistent state. Following directories are missing to restore previous install: $MISSING_DIR"
-    exit 1
+        exit 1
 	fi
 	return $DIR_COUNTER
 }
@@ -143,7 +144,7 @@ if [[ ! -e $LATEST_SERVER_DIR ]]; then
 	if is_new_install; then
 		setup_seafile
 	else
-	  restore_install
+	    restore_install
 	fi
 	log_info "All is Done"
 	log_info "Starting Seafile ..."

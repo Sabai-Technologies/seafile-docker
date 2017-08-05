@@ -29,6 +29,8 @@ Tags of this image follow Seafile version:
   - Directory Structure
   ```
       seafile/
+          ├── ccnet
+          │   └── seafile.ini
           ├── conf
           │   ├── ccnet.conf
           │   ├── seafdav.conf
