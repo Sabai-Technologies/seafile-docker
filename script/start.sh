@@ -1,6 +1,5 @@
 #!/bin/bash
 
-
 . /usr/local/bin/seafile_env.sh
 
 EXPOSED_DIRS="conf ccnet logs seafile-data seahub-data"
@@ -17,7 +16,7 @@ setup_seafile(){
 
 	"$SERVER_DIR"/setup-seafile-mysql.sh auto \
 	    -n "${SERVER_NAME:-"seafile"}" \
-	    -i "127.0.0.1" \
+	    -i "${SERVER_ADDRESS:-"127.0.0.1"}" \
 	    -p 8082 \
 		-e 0 \
 	    -o "${MYSQL_SERVER}" \
@@ -34,6 +33,8 @@ setup_seafile(){
 	setup_seahub
     setup_exposed_directories
 	link_exposed_directories
+	move_media_directory
+	fastcgi_conf
 }
 
 setup_seahub(){
@@ -90,6 +91,24 @@ link_exposed_directories() {
     done
 }
 
+move_media_directory() {
+    log_info "Moving seahub/media directory in root exposed directory"
+    mkdir "$EXPOSED_ROOT_DIR/seahub"
+    mv "$LATEST_SERVER_DIR/seahub/media" "$EXPOSED_ROOT_DIR/seahub/"
+    CUR_DIR=$(pwd)
+    cd "$EXPOSED_ROOT_DIR/seahub/media"
+    ln -sf ../../seahub-data/avatars .
+    cd $CUR_DIR
+    ln -sf "$EXPOSED_ROOT_DIR/seahub/media" "$LATEST_SERVER_DIR/seahub/media"
+}
+
+fastcgi_conf() {
+    log_info "Updating configuration for FASTCGI mode"
+    if [[ $FASTCGI = [Tt]rue ]];then
+        echo "FILE_SERVER_ROOT = 'http://$SERVER_ADDRESS/seafhttp'" >> $EXPOSED_ROOT_DIR/conf/seahub_settings.py
+    fi
+}
+
 is_new_install(){
 	DIR_COUNTER=0
 	MISSING_DIR=""
@@ -112,6 +131,15 @@ restore_install(){
 	log_info "Restoring previous install"
 	link_exposed_directories
 	ln -sf "$SERVER_DIR" "$LATEST_SERVER_DIR"
+    ln -sf "$EXPOSED_ROOT_DIR/seahub/media" "$LATEST_SERVER_DIR/seahub/media"
+
+    if [[ $FASTCGI = [Tt]rue ]];then
+        if ! grep -qE '^FILE_SERVER_ROOT' "$EXPOSED_ROOT_DIR/conf/seahub_settings.py";then
+            fastcgi_conf
+        fi
+    else
+        sed -i '/^FILE_SERVER_ROOT/ d' "$EXPOSED_ROOT_DIR/conf/seahub_settings.py"
+    fi
 }
 
 control_seafile() {

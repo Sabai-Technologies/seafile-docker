@@ -1,12 +1,13 @@
 version: '2'
 services:
-  seafile:
-    image: sabaitech/seafile:6.1.1
+    image: sabaitech/seafile:latest
     container_name: seafile
     ports:
      - "8000:8000"
      - "8082:8082"
     environment:
+     - SERVER_ADDRESS=my.domain.com
+     - FASTCGI=true
      - MYSQL_SERVER=mariadb
      - MYSQL_USER=$SEAFILE_USER
      - MYSQL_USER_PASSWORD=$SEAFILE_PASSWORD

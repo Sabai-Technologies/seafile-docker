@@ -7,6 +7,7 @@ Seafile docker image based on Debian
 ## Features ##
 * Auto configuration on first run, based on the manual setup described in the official  [documentation](https://manual.seafile.com/deploy/using_mysql.html)
 * Auto import previous installation, including non docker installation
+* Support FASTCGI mode
 * Upgrade Seafile with one simple command
 
 ## Supported tags ##
@@ -27,26 +28,39 @@ Tags of this image follow Seafile version:
     * from version 6.1.1 -> /seafile
 
   - Directory Structure
-  ```
-      seafile/
+  ``` seafile/
           ├── ccnet
           │   └── seafile.ini
+          │
           ├── conf
           │   ├── ccnet.conf
           │   ├── seafdav.conf
           │   ├── seafile.conf
           │   ├── seahub_settings.py
           │   └── seahub_settings.pyc
+          │
           ├── logs
           │   ├── ccnet.log
           │   ├── controller.log
           │   ├── seafile.log
           │   ├── seahub.log
           │   └── seahub_django_request.log
+          │
           ├── seafile-data
-```
+          │
+          ├── seahub
+          │   └── media 
+          │
+          └── seahub-data
+   ```       
+    * The folder **seafile/seahub/media** must be shared with Apache/nginx when running in FASTCGI mode
+              
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
+  
+  * **SERVER_NAME** (default is *127.0.0.1*): IP or domain name of the server
+  
+  * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
 
   * **MYSQL_SERVER** (required):  MySQL/Maria DB Server name or ip, could be the name of the database service in docker-compose.yml file.
 
@@ -80,6 +94,8 @@ Tags of this image follow Seafile version:
        - "8000:8000"
        - "8082:8082"
       environment:
+       - SERVER_ADDRESS=my.domain.com
+       - FASTCGI=true
        - MYSQL_SERVER=mariadb
        - MYSQL_USER=seafile
        - MYSQL_USER_PASSWORD=test
@@ -130,4 +146,3 @@ where:
 ## TODO ##
 * Manage SQLite
 * Expose some services like Garbage Collector
-* Manage Fast CGI
