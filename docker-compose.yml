@@ -1,32 +1,35 @@
-version: '2'
+version: '3'
+
 services:
-    image: sabaitech/seafile:latest
-    container_name: seafile
+  seafile:
+    build: .
     ports:
      - "8000:8000"
      - "8082:8082"
+    # connect localhost ports for oauth2 callback
+    network_mode: "host"
     environment:
-     - SERVER_ADDRESS=my.domain.com
-     - FASTCGI=true
-     - MYSQL_SERVER=mariadb
-     - MYSQL_USER=$SEAFILE_USER
-     - MYSQL_USER_PASSWORD=$SEAFILE_PASSWORD
-     - MYSQL_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
-     - SEAFILE_ADMIN=$SEAFILE_ADMIN
-     - SEAFILE_ADMIN_PASSWORD=$SEAFILE_ADMIN_PASSWORD
+      SERVER_ADDRESS: $SEAFILE_SERVER_ADDRESS
+      SEAFILE_ADMIN: $SEAFILE_ADMIN
+      SEAFILE_ADMIN_PASSWORD: $SEAFILE_ADMIN_PASSWORD
+      FASTCGI: $FASTCGI
+      MYSQL_SERVER: 127.0.0.1
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_USER_PASSWORD: $MYSQL_USER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     volumes:
-     - ./seafile:/seafile
+      - "./seafile:/seafile"
     depends_on:
-     - mariadb
+    - mariadb
 
   mariadb:
     image: mariadb:10.1
-    container_name: mariadb
     ports:
      - "3306:3306"
+    network_mode: "host"
     environment:
-      - MYSQL_ROOT_PASSWORD=$MARIADB_ROOT_PASSWORD
-      - MYSQL_USER=$SEAFILE_USER
-      - MYSQL_PASSWORD=$SEAFILE_PASSWORD
+      MYSQL_USER: $MYSQL_USER
+      MYSQL_PASSWORD: $MYSQL_USER_PASSWORD
+      MYSQL_ROOT_PASSWORD: $MYSQL_ROOT_PASSWORD
     volumes:
       - ./mysql/db:/var/lib/mysql
