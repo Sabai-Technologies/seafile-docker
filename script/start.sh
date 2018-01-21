@@ -1,7 +1,6 @@
 #!/bin/bash
 
-. /usr/local/bin/seafile_env.sh
-
+SERVER_DIR="$SEAFILE_ROOT_DIR"/$(ls -1 "$SEAFILE_ROOT_DIR" | grep -E "seafile-server-[0-9.-]+")
 EXPOSED_DIRS="conf ccnet logs seafile-data seahub-data"
 EXPOSED_ROOT_DIR=${EXPOSED_ROOT_DIR:-"/seafile"}
 
@@ -18,10 +17,10 @@ setup_seafile(){
 	    -n "${SERVER_NAME:-"seafile"}" \
 	    -i "${SERVER_ADDRESS:-"127.0.0.1"}" \
 	    -p 8082 \
-		-e 0 \
+		  -e 0 \
 	    -o "${MYSQL_SERVER}" \
 	    -t "${MYSQL_PORT:-3306}" \
-		-r "${MYSQL_ROOT_PASSWORD}" \
+		  -r "${MYSQL_ROOT_PASSWORD}" \
 	    -u "${MYSQL_USER}" \
 	    -w "${MYSQL_USER_PASSWORD}" \
 	    -q "%" \
@@ -31,7 +30,7 @@ setup_seafile(){
 
 	log_info "Seafile server is successfully configured"
 	setup_seahub
-    setup_exposed_directories
+  setup_exposed_directories
 	link_exposed_directories
 	move_media_directory
 	fastcgi_conf
@@ -43,13 +42,11 @@ setup_seahub(){
 	sed -i 's/= ask_admin_email()/= '"\"${SEAFILE_ADMIN}\""'/' ${SERVER_DIR}/check_init_admin.py
 	sed -i 's/= ask_admin_password()/= '"\"${SEAFILE_ADMIN_PASSWORD}\""'/' ${SERVER_DIR}/check_init_admin.py
 
-	# Start and stop Seafile to generate the admin user.
-	control_seafile "start"
-	control_seahub "start"
- 	sleep 2
- 	control_seahub "stop"
-	sleep 1
-	control_seafile "stop"
+  seafile start
+	seahub start
+	seahub stop
+	seafile stop
+
 	log_info "Seahub server is successfully configured"
 }
 
@@ -142,14 +139,6 @@ restore_install(){
     fi
 }
 
-control_seafile() {
-	"$SERVER_DIR"/seafile.sh "$@"
-}
-
-control_seahub() {
-	"$SERVER_DIR"/seahub.sh "$@"
-}
-
 log_info() {
 	printf "$GREEN[$(date +"%F %T,%3N")] $1$NC\n"
 }
@@ -178,4 +167,7 @@ if [[ ! -e $LATEST_SERVER_DIR ]]; then
 	log_info "Starting Seafile ..."
 fi
 
-exec /usr/bin/supervisord -c /etc/supervisor/supervisord.conf
+seafile start
+seahub start
+
+tail -f ${SEAFILE_ROOT_DIR}/logs/seafile.log

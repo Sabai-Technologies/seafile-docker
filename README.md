@@ -49,17 +49,17 @@ Tags of this image follow Seafile version:
           ├── seafile-data
           │
           ├── seahub
-          │   └── media 
+          │   └── media
           │
           └── seahub-data
    ```       
     * The folder **seafile/seahub/media** must be shared with Apache/nginx when running in FASTCGI mode
-              
+
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
-  
+
   * **SERVER_NAME** (default is *127.0.0.1*): IP or domain name of the server
-  
+
   * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
 
   * **MYSQL_SERVER** (required):  MySQL/Maria DB Server name or ip, could be the name of the database service in docker-compose.yml file.
@@ -129,6 +129,22 @@ and just run ```docker-compose up -d```
  If you already have a previous installation of Seafile server (including non docker installation) and want to use this image you just have to:
    1. Put ```conf```, ```logs```, ```seafile-data``` directories in the associated volume
    2. Run ```docker-compose up -d```
+
+
+## Supported commands ##
+
+  You can **start**, **stop**, **restart** seafile and seahub with a command like :
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose exec **seafile** **server** **command**
+
+where:
+
+  - **seafile** is the name of the service defined in *docker-compose.yml* file
+
+  - **server** is ***seafile*** or ***seahub***
+
+  - **command** is ***start***, ***stop***, ***restart***
+
 
 
 ## Upgrading Seafile server ##

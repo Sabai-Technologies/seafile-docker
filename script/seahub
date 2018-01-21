@@ -1,0 +1,12 @@
+#!/bin/bash
+
+shopt -s nocasematch
+if [[ "$1" == "start" ]]; then
+  if [[ "$FASTCGI" == "true" ]];then
+  		SEAFILE_FASTCGI_HOST=0.0.0.0 nohup $LATEST_SERVER_DIR/seahub.sh start-fastcgi
+  else
+  		nohup $LATEST_SERVER_DIR/seahub.sh start
+  fi
+else
+  nohup $LATEST_SERVER_DIR/seahub.sh "$@"
+fi

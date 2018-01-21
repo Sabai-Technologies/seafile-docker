@@ -1,7 +1,5 @@
 #!/bin/bash
 
-. /usr/local/bin/seafile_env.sh
-
 NEW_VERSION=$1
 UPGRADE_DIR="$SERVER_DIR_BASENAME-$NEW_VERSION/upgrade"
 CURRENT_VERSION=${SERVER_DIR:(-5)}
@@ -38,7 +36,8 @@ fi
 
 NEWEST=$((echo "$NEW_VERSION"; echo "$CURRENT_VERSION" ) | sort -V | tail -n1)
 if [[ $NEWEST == $NEW_VERSION ]]; then
-  supervisorctl stop seahub seafile
+  seahub stop
+	seafile start
 	wget --no-check-certificate --show-progress -qO- $(echo "$SEAFILE_URL_PATTERN" | sed "s/VERSION/$NEW_VERSION/") | tar xz
 
 	CURRENT_MAJOR=$(major $CURRENT_VERSION)
@@ -53,7 +52,8 @@ if [[ $NEWEST == $NEW_VERSION ]]; then
 	fi
 
 	rm -rf "$SEAFILE_ROOT_DIR/$SERVER_DIR_BASENAME-$CURRENT_VERSION"
-	supervisorctl start seafile seahub
+	seafile start
+	seahub.sh start
 else
 	echo "Current version [$CURRENT_VERSION] is newer than [$NEW_VERSION]"
 	exit 1
