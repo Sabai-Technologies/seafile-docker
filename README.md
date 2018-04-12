@@ -82,6 +82,16 @@ Tags of this image follow Seafile version:
 
   * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
 
+  * **SEAFILE_LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
+
+  * **SEAFILE_LDAP_BASE** (required if **SEAFILE_LDAP_URL** ist set): LDAP BASE (e.g. ou=People,dc=example,dc=org)
+
+  * **SEAFILE_LDAP_LOGIN_ATTR** (required if **SEAFILE_LDAP_URL** ist set): LDAP Login attribute (e.g. mail)
+
+  * **SEAFILE_LDAP_USER_DN** (optional): LDAP user DN
+
+  * **SEAFILE_LDAP_PASSWORD** (optional): LDAP user password
+
 
 ## docker-compose.yml example ##
   ```yml
@@ -102,8 +112,13 @@ Tags of this image follow Seafile version:
        - MYSQL_ROOT_PASSWORD=passw0rd!
        - SEAFILE_ADMIN=admin@domain.com
        - SEAFILE_ADMIN_PASSWORD=passw00rd
+#       - SEAFILE_LDAP_URL=ldap://openldap
+#       - SEAFILE_LDAP_BASE=ou=People,dc=example,dc=org
+#       - SEAFILE_LDAP_LOGIN_ATTR=mail
+#       - SEAFILE_LDAP_USER_DN=user_dn
+#       - SEAFILE_LDAP_PASSWORD=ldap_passw0rd
       volumes:
-       - ./seafile:/home/seafile
+       - ./seafile:/seafile
       depends_on:
        - mariadb
 

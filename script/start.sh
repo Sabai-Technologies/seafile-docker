@@ -50,6 +50,31 @@ setup_seahub(){
 	log_info "Seahub server is successfully configured"
 }
 
+setup_ldap(){
+	if [ -n "${SEAFILE_LDAP_URL}" ]; then
+		log_info "Configuring LDAP"
+		check_require "SEAFILE_LDAP_BASE" $SEAFILE_LDAP_BASE
+		check_require "SEAFILE_LDAP_LOGIN_ATTR" $SEAFILE_LDAP_LOGIN_ATTR
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP HOST ${SEAFILE_LDAP_URL}
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP BASE ${SEAFILE_LDAP_BASE}
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP LOGIN_ATTR ${SEAFILE_LDAP_LOGIN_ATTR}
+		if [ -n "${SEAFILE_LDAP_USER_DN}" ]; then
+			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN ${SEAFILE_LDAP_USER_DN}
+		else
+			crudini --del $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN
+		fi
+		if [ -n "${SEAFILE_LDAP_PASSWORD}" ]; then
+			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP PASSWORD ${SEAFILE_LDAP_PASSWORD}
+		else
+			crudini --del $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP PASSWORD
+		fi
+		log_info "LDAP configured"
+	else
+		log_info "LDAP not configured"
+		crudini --del $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP
+	fi
+}
+
 wait_for_db() {
 	log_info "Trying to connect to the DB server"
 	DOCKERIZE_TIMEOUT=${DOCKERIZE_TIMEOUT:-"60s"}
@@ -155,8 +180,8 @@ check_require() {
 	fi
 }
 
+wait_for_db
 if [[ ! -e $LATEST_SERVER_DIR ]]; then
-	wait_for_db
 	check_required_params
 	if is_new_install; then
 		setup_seafile
@@ -166,6 +191,8 @@ if [[ ! -e $LATEST_SERVER_DIR ]]; then
 	log_info "All is Done"
 	log_info "Starting Seafile ..."
 fi
+
+setup_ldap
 
 seafile start
 seahub start
