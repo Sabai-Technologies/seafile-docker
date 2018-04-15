@@ -9,6 +9,7 @@ Seafile docker image based on Debian
 * Auto import previous installation, including non docker installation
 * Support FASTCGI mode
 * Upgrade Seafile with one simple command
+* Support LDAP configuration
 
 ## Supported tags ##
 Tags of this image follow Seafile version:
@@ -82,6 +83,16 @@ Tags of this image follow Seafile version:
 
   * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
 
+  * **LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
+
+  * **LDAP_BASE** (required if **LDAP_URL** ist set): LDAP BASE (e.g. ou=people,dc=example,dc=org)
+
+  * **LDAP_LOGIN_ATTR** (required if **LDAP_URL** ist set): LDAP Login attribute (e.g. mail)
+
+  * **LDAP_USER_DN** (optional): LDAP user DN (e.g. cn=admin,dc=example,dc=org)
+
+  * **LDAP_PASSWORD** (optional): LDAP user password
+
 
 ## docker-compose.yml example ##
   ```yml
@@ -102,8 +113,13 @@ Tags of this image follow Seafile version:
        - MYSQL_ROOT_PASSWORD=passw0rd!
        - SEAFILE_ADMIN=admin@domain.com
        - SEAFILE_ADMIN_PASSWORD=passw00rd
+       - LDAP_URL=ldap://openldap
+       - LDAP_BASE=ou=people,dc=example,dc=org
+       - LDAP_LOGIN_ATTR=mail
+       - LDAP_USER_DN=cn=admin,dc=example,dc=org
+       - LDAP_PASSWORD=ldap_passw0rd
       volumes:
-       - ./seafile:/home/seafile
+       - ./seafile:/seafile
       depends_on:
        - mariadb
 
