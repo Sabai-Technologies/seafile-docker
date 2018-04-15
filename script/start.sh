@@ -51,20 +51,20 @@ setup_seahub(){
 }
 
 setup_ldap(){
-	if [ -n "${SEAFILE_LDAP_URL}" ]; then
+	if [ -n "${LDAP_URL}" ]; then
 		log_info "Configuring LDAP"
-		check_require "SEAFILE_LDAP_BASE" $SEAFILE_LDAP_BASE
-		check_require "SEAFILE_LDAP_LOGIN_ATTR" $SEAFILE_LDAP_LOGIN_ATTR
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP HOST ${SEAFILE_LDAP_URL}
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP BASE ${SEAFILE_LDAP_BASE}
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP LOGIN_ATTR ${SEAFILE_LDAP_LOGIN_ATTR}
-		if [ -n "${SEAFILE_LDAP_USER_DN}" ]; then
-			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN ${SEAFILE_LDAP_USER_DN}
+		check_require "LDAP_BASE" $LDAP_BASE
+		check_require "LDAP_LOGIN_ATTR" $LDAP_LOGIN_ATTR
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP HOST ${LDAP_URL}
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP BASE ${LDAP_BASE}
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP LOGIN_ATTR ${LDAP_LOGIN_ATTR}
+		if [ -n "${LDAP_USER_DN}" ]; then
+			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN ${LDAP_USER_DN}
 		else
 			crudini --del $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN
 		fi
-		if [ -n "${SEAFILE_LDAP_PASSWORD}" ]; then
-			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP PASSWORD ${SEAFILE_LDAP_PASSWORD}
+		if [ -n "${LDAP_PASSWORD}" ]; then
+			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP PASSWORD ${LDAP_PASSWORD}
 		else
 			crudini --del $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP PASSWORD
 		fi
