@@ -112,11 +112,11 @@ Tags of this image follow Seafile version:
        - MYSQL_ROOT_PASSWORD=passw0rd!
        - SEAFILE_ADMIN=admin@domain.com
        - SEAFILE_ADMIN_PASSWORD=passw00rd
-#       - SEAFILE_LDAP_URL=ldap://openldap
-#       - SEAFILE_LDAP_BASE=ou=people,dc=example,dc=org
-#       - SEAFILE_LDAP_LOGIN_ATTR=mail
-#       - SEAFILE_LDAP_USER_DN=cn=admin,dc=example,dc=org
-#       - SEAFILE_LDAP_PASSWORD=ldap_passw0rd
+       - LDAP_URL=ldap://openldap
+       - LDAP_BASE=ou=people,dc=example,dc=org
+       - LDAP_LOGIN_ATTR=mail
+       - LDAP_USER_DN=cn=admin,dc=example,dc=org
+       - LDAP_PASSWORD=ldap_passw0rd
       volumes:
        - ./seafile:/seafile
       depends_on:
