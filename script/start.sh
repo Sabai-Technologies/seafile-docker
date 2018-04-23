@@ -77,12 +77,12 @@ setup_ldap(){
 
 enable_ssl() {
 	if [ "$ENABLE_SSL" = true ]; then
-		sed -i 's/SERVICE_URL = http:\/\//SERVICE_URL = https:\/\//g' $EXPOSED_ROOT_DIR/conf/ccnet.conf
+		sed -i 's/SERVICE_URL = http:\/\/\(.*\):8000/SERVICE_URL = https:\/\/\1/g' $EXPOSED_ROOT_DIR/conf/ccnet.conf
 		if ! grep -Fxq "FILE_SERVER_ROOT = 'https://${SERVER_ADDRESS:-"127.0.0.1"}/seafhttp'" $EXPOSED_ROOT_DIR/conf/seahub_settings.py; then
 			echo "FILE_SERVER_ROOT = 'https://${SERVER_ADDRESS:-"127.0.0.1"}/seafhttp'" >> $EXPOSED_ROOT_DIR/conf/seahub_settings.py
 		fi
 	else
-		sed -i 's/SERVICE_URL = https:\/\//SERVICE_URL = http:\/\//g' $EXPOSED_ROOT_DIR/conf/ccnet.conf
+		sed -i 's/SERVICE_URL = https:\/\/\(.*\)/SERVICE_URL = http:\/\/\1:8000/g' $EXPOSED_ROOT_DIR/conf/ccnet.conf
 		sed -i '/^FILE_SERVER_ROOT = / d' $EXPOSED_ROOT_DIR/conf/seahub_settings.py
 	fi
 }
