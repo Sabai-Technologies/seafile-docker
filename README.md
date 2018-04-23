@@ -10,6 +10,7 @@ Seafile docker image based on Debian
 * Support FASTCGI mode
 * Upgrade Seafile with one simple command
 * Support LDAP configuration
+* Enable SSL
 
 ## Supported tags ##
 Tags of this image follow Seafile version:
@@ -83,6 +84,8 @@ Tags of this image follow Seafile version:
 
   * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
 
+  * **ENABLE_SSL** (optional): Make seafile use https instead of http. The certificate has to be added to nginx / apache (see https://manual.seafile.com/deploy/https_with_nginx.html).
+
   * **LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
 
   * **LDAP_BASE** (required if **LDAP_URL** ist set): LDAP BASE (e.g. ou=people,dc=example,dc=org)
@@ -113,6 +116,7 @@ Tags of this image follow Seafile version:
        - MYSQL_ROOT_PASSWORD=passw0rd!
        - SEAFILE_ADMIN=admin@domain.com
        - SEAFILE_ADMIN_PASSWORD=passw00rd
+       - ENABLE_SSL=false
        - LDAP_URL=ldap://openldap
        - LDAP_BASE=ou=people,dc=example,dc=org
        - LDAP_LOGIN_ATTR=mail
