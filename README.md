@@ -60,7 +60,7 @@ Tags of this image follow Seafile version:
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
 
-  * **SERVER_NAME** (default is *127.0.0.1*): IP or domain name of the server
+  * **SERVER_ADDRESS** (default is *127.0.0.1*): IP or domain name of the server
 
   * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
 
@@ -84,7 +84,7 @@ Tags of this image follow Seafile version:
 
   * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
 
-  * **ENABLE_SSL** (optional): Make seafile use https instead of http. The certificate has to be added to nginx / apache (see https://manual.seafile.com/deploy/https_with_nginx.html).
+  * **ENABLE_SSL** (default is *false*): Make seafile use https instead of http. The certificate has to be added to nginx / apache (see https://manual.seafile.com/deploy/https_with_nginx.html).
 
   * **LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
 
