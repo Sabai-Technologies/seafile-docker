@@ -13,6 +13,7 @@ ENV \
 RUN \
     apt-get -y update \
     && apt-get install --no-install-recommends -y \
+        crudini \
         procps \
         wget \
         python2.7 \
