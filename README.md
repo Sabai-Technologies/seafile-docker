@@ -12,10 +12,14 @@ Seafile docker image based on Debian
 * Support LDAP configuration
 
 ## Supported tags ##
-Tags of this image follow Seafile version:
-* latest - Development build based on the latest Seafile version
-* 6.1.1 - Seafile server 6.1.1
-* 6.0.7 - Seafile server 6.0.7
+Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y.z**_ is the version of Seafile
+ and _**a**_ is an increment to follow features and bug fix of this image
+
+* **latest** Development version, may be unstable
+* **6.2.1-1**  added LDAP configuration (thanks to [zsoerenm](https://github.com/zsoerenm))
+* **6.2.1** updated Seafile version
+* **6.1.1** updated Seafile version
+* **6.0.7** this version is no more maintained
 
 ## Detailed Configuration ##
 - #### Ports ####
