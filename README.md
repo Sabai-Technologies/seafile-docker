@@ -171,13 +171,15 @@ where:
 
 To upgrade the current version of Seafile server, you just have to run the following command:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;docker-compose exec **seafile** upgrade **6.0.8**
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile upgrade 6.0.8```
 
 where:
 
   - **seafile** is the name of the service defined in *docker-compose.yml* file
 
   - **6.0.8** is the new version
+  
+Once you have upgraded the server, you can change the version of the image in the `docker-compose.yml` file to keep the change permanently.
 
 ## TODO ##
 * Manage SQLite
