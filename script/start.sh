@@ -1,48 +1,47 @@
 #!/bin/bash
 
+source /usr/local/bin/common.sh
+
 SERVER_DIR="$SEAFILE_ROOT_DIR"/$(ls -1 "$SEAFILE_ROOT_DIR" | grep -E "seafile-server-[0-9.-]+")
 EXPOSED_DIRS="conf ccnet logs seafile-data seahub-data"
 EXPOSED_ROOT_DIR=${EXPOSED_ROOT_DIR:-"/seafile"}
 
-RED='\033[0;31m'
-GREEN='\033[0;32m'
-NC='\033[0m' # No Color
-
 setup_seafile(){
-	log_info "Configuring seafile server"
-	check_require "SEAFILE_ADMIN" $SEAFILE_ADMIN
-	check_require "SEAFILE_ADMIN_PASSWORD" $SEAFILE_ADMIN_PASSWORD
+    log_info "Configuring seafile server"
+    check_require "SEAFILE_ADMIN" $SEAFILE_ADMIN
+    check_require "SEAFILE_ADMIN_PASSWORD" $SEAFILE_ADMIN_PASSWORD
 
-	"$SERVER_DIR"/setup-seafile-mysql.sh auto \
-	    -n "${SERVER_NAME:-"seafile"}" \
-	    -i "${SERVER_ADDRESS:-"127.0.0.1"}" \
-	    -p 8082 \
-		  -e 0 \
-	    -o "${MYSQL_SERVER}" \
-	    -t "${MYSQL_PORT:-3306}" \
-		  -r "${MYSQL_ROOT_PASSWORD}" \
-	    -u "${MYSQL_USER}" \
-	    -w "${MYSQL_USER_PASSWORD}" \
-	    -q "%" \
-	    -c "${CCNET_DB:-"ccnet-db"}" \
-	    -s "${SEAFILE_DB:-"seafile-db"}" \
-	    -b "${SEAHUB_DB:-"seahub-db"}"
+    "$SERVER_DIR"/setup-seafile-mysql.sh auto \
+        -n "${SERVER_NAME:-"seafile"}" \
+        -i "${SERVER_ADDRESS:-"127.0.0.1"}" \
+        -p 8082 \
+        -e 0 \
+        -o "${MYSQL_SERVER}" \
+        -t "${MYSQL_PORT:-3306}" \
+        -r "${MYSQL_ROOT_PASSWORD}" \
+        -u "${MYSQL_USER}" \
+        -w "${MYSQL_USER_PASSWORD}" \
+        -q "%" \
+        -c "${CCNET_DB:-"ccnet-db"}" \
+        -s "${SEAFILE_DB:-"seafile-db"}" \
+        -b "${SEAHUB_DB:-"seahub-db"}"
 
-	log_info "Seafile server is successfully configured"
-	setup_seahub
-  setup_exposed_directories
-	link_exposed_directories
-	move_media_directory
-	fastcgi_conf
+    log_info "Seafile server is successfully configured"
+    setup_seahub
+    setup_exposed_directories
+    link_exposed_directories
+    move_media_directory
+    fastcgi_conf
 }
 
 setup_seahub(){
 	log_info "Configuring seahub server"
+
 	# From https://github.com/haiwen/seafile-server-installer-cn/blob/master/seafile-server-ubuntu-14-04-amd64-http
 	sed -i 's/= ask_admin_email()/= '"\"${SEAFILE_ADMIN}\""'/' ${SERVER_DIR}/check_init_admin.py
 	sed -i 's/= ask_admin_password()/= '"\"${SEAFILE_ADMIN_PASSWORD}\""'/' ${SERVER_DIR}/check_init_admin.py
 
-  seafile start
+    seafile start
 	seahub start
 	seahub stop
 	seafile stop
@@ -55,9 +54,9 @@ setup_ldap(){
 		log_info "Configuring LDAP"
 		check_require "LDAP_BASE" $LDAP_BASE
 		check_require "LDAP_LOGIN_ATTR" $LDAP_LOGIN_ATTR
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP HOST ${LDAP_URL}
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP BASE ${LDAP_BASE}
-		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP LOGIN_ATTR ${LDAP_LOGIN_ATTR}
+        crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP HOST ${LDAP_URL}
+        crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP BASE ${LDAP_BASE}
+        crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP LOGIN_ATTR ${LDAP_LOGIN_ATTR}
 		if [ -n "${LDAP_USER_DN}" ]; then
 			crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf LDAP USER_DN ${LDAP_USER_DN}
 		else
@@ -113,17 +112,6 @@ link_exposed_directories() {
     done
 }
 
-move_media_directory() {
-    log_info "Moving seahub/media directory in root exposed directory"
-    mkdir "$EXPOSED_ROOT_DIR/seahub"
-    mv "$LATEST_SERVER_DIR/seahub/media" "$EXPOSED_ROOT_DIR/seahub/"
-    CUR_DIR=$(pwd)
-    cd "$EXPOSED_ROOT_DIR/seahub/media"
-    ln -sf ../../seahub-data/avatars .
-    cd $CUR_DIR
-    ln -sf "$EXPOSED_ROOT_DIR/seahub/media" "$LATEST_SERVER_DIR/seahub/media"
-}
-
 fastcgi_conf() {
     log_info "Updating configuration for FASTCGI mode"
     if [[ $FASTCGI = [Tt]rue ]];then
@@ -163,15 +151,6 @@ restore_install(){
         sed -i '/^FILE_SERVER_ROOT/ d' "$EXPOSED_ROOT_DIR/conf/seahub_settings.py"
     fi
 }
-
-log_info() {
-	printf "$GREEN[$(date +"%F %T,%3N")] $1$NC\n"
-}
-
-log_error() {
-	printf "$RED[$(date +"%F %T,%3N")] $1$NC\n"
-}
-
 
 check_require() {
 	if [[ -z ${2//[[:blank:]]/} ]]; then

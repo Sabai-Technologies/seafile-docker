@@ -1,60 +1,73 @@
 #!/bin/bash
 
+source /usr/local/bin/common.sh
+
 NEW_VERSION=$1
-UPGRADE_DIR="$SERVER_DIR_BASENAME-$NEW_VERSION/upgrade"
-CURRENT_VERSION=${SERVER_DIR:(-5)}
+CURRENT_VERSION=$(ls -1 "$SEAFILE_ROOT_DIR" | grep -E "seafile-server-[0-9.-]+" | cut -c16-)
+UPGRADE_DIR="$SEAFILE_ROOT_DIR/seafile-server-$NEW_VERSION/upgrade"
 
 major_upgrade(){
-	for UPGRADE in $(ls "$UPGRADE_DIR" | grep -E "^upgrade_[$1-9]\.[$2-9]_.*")
-	do
-		yes | ./"$UPGRADE_DIR/$UPGRADE"
-		sleep 1
-	done
+    for UPGRADE in $(ls "$UPGRADE_DIR" | grep -E "^upgrade_[$1-9]\.[$2-9]_.*")
+    do
+    yes | "$UPGRADE_DIR/$UPGRADE"
+    sleep 1
+    done
 }
 
 patch_upgrade(){
-	yes | ./"$UPGRADE_DIR"/minor-upgrade.sh
+    yes | "$UPGRADE_DIR"/minor-upgrade.sh
 }
 
 major(){
-	echo ${1:0:1}
+    echo ${1:0:1}
 }
 
 minor(){
-	echo ${1:2:1}
+    echo ${1:2:1}
 }
 
 if [[ ! $NEW_VERSION =~ ^([0-9]+)\.([0-9]+)\.([0-9]+)$ ]]; then
-	echo "$NEW_VERSION does not match the pattern version (x.y.z)"
-	exit 1
+    echo "$NEW_VERSION does not match the pattern version (x.y.z)"
+    exit 1
 fi
 
 if [[ $NEW_VERSION == $CURRENT_VERSION ]]; then
-	echo "$NEW_VERSION is already installed"
-	exit 1
+    echo "$NEW_VERSION is already installed"
+    exit 1
 fi
 
 NEWEST=$((echo "$NEW_VERSION"; echo "$CURRENT_VERSION" ) | sort -V | tail -n1)
 if [[ $NEWEST == $NEW_VERSION ]]; then
-  seahub stop
-	seafile start
-	wget --no-check-certificate --show-progress -qO- $(echo "$SEAFILE_URL_PATTERN" | sed "s/VERSION/$NEW_VERSION/") | tar xz
+    log_info "Stopping Seahub"
+    seahub stop
 
-	CURRENT_MAJOR=$(major $CURRENT_VERSION)
-	CURRENT_MINOR=$(minor $CURRENT_VERSION)
-	NEW_MINOR=$(minor $NEW_VERSION)
-	NEW_MAJOR=$(major $NEW_VERSION)
+    log_info "Stopping Seafile"
+    seafile stop
 
-	if [[ $CURRENT_MAJOR -ne $NEW_MAJOR || $CURRENT_MINOR -ne $NEW_MINOR ]]; then
-		major_upgrade $CURRENT_MAJOR $CURRENT_MINOR
-	else
-		patch_upgrade
-	fi
+    log_info "Downloading Seafile $NEW_VERSION"
+    wget --no-check-certificate --show-progress -qO- $(echo "$SEAFILE_URL_PATTERN" | sed "s/VERSION/$NEW_VERSION/") | tar xz -C $SEAFILE_ROOT_DIR
 
-	rm -rf "$SEAFILE_ROOT_DIR/$SERVER_DIR_BASENAME-$CURRENT_VERSION"
-	seafile start
-	seahub.sh start
+    CURRENT_MAJOR=$(major $CURRENT_VERSION)
+    CURRENT_MINOR=$(minor $CURRENT_VERSION)
+    NEW_MINOR=$(minor $NEW_VERSION)
+    NEW_MAJOR=$(major $NEW_VERSION)
+
+    if [[ $CURRENT_MAJOR -ne $NEW_MAJOR || $CURRENT_MINOR -ne $NEW_MINOR ]]; then
+      major_upgrade $CURRENT_MAJOR $CURRENT_MINOR
+    else
+      patch_upgrade
+    fi
+    move_media_directory
+
+    log_info "Removing Seafile $CURRENT_VERSION"
+    rm -rf "$SEAFILE_ROOT_DIR/seafile-server-$CURRENT_VERSION"
+
+    log_info "Starting Seafile"
+    seafile start
+
+    log_info "Starting Seahub"
+    seahub  start
 else
-	echo "Current version [$CURRENT_VERSION] is newer than [$NEW_VERSION]"
-	exit 1
+    echo "Current version [$CURRENT_VERSION] is newer than [$NEW_VERSION]"
+    exit 1
 fi
