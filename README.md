@@ -10,6 +10,7 @@ Seafile docker image based on Debian
 * Support FASTCGI mode
 * Upgrade Seafile with one simple command
 * Support LDAP configuration
+* Enable SSL
 
 ## Supported tags ##
 Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y.z**_ is the version of Seafile
@@ -63,7 +64,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
 
-  * **SERVER_NAME** (default is *127.0.0.1*): IP or domain name of the server
+  * **SERVER_ADDRESS** (default is *127.0.0.1*): IP or domain name of the server
 
   * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
 
@@ -86,6 +87,8 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
   * **SEAFILE_ADMIN** (required): email for the admin account
 
   * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
+
+  * **ENABLE_SSL** (default is *false*): Make seafile use https instead of http. The certificate has to be added to nginx / apache (see https://manual.seafile.com/deploy/https_with_nginx.html).
 
   * **LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
 
@@ -117,6 +120,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
        - MYSQL_ROOT_PASSWORD=passw0rd!
        - SEAFILE_ADMIN=admin@domain.com
        - SEAFILE_ADMIN_PASSWORD=passw00rd
+       - ENABLE_SSL=false
        - LDAP_URL=ldap://openldap
        - LDAP_BASE=ou=people,dc=example,dc=org
        - LDAP_LOGIN_ATTR=mail

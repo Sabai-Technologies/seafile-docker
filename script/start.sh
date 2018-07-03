@@ -74,6 +74,20 @@ setup_ldap(){
 	fi
 }
 
+enable_ssl() {
+	if [ "$ENABLE_SSL" = true ]; then
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf General SERVICE_URL "https://${SERVER_ADDRESS:-"127.0.0.1"}"
+		if ! grep -q "FILE_SERVER_ROOT = " $EXPOSED_ROOT_DIR/conf/seahub_settings.py; then
+			echo "FILE_SERVER_ROOT = 'https://${SERVER_ADDRESS:-"127.0.0.1"}/seafhttp'" >> $EXPOSED_ROOT_DIR/conf/seahub_settings.py
+		else
+			sed -i "s/FILE_SERVER_ROOT = \(.*\)/FILE_SERVER_ROOT = 'https:\/\/${SERVER_ADDRESS:-"127.0.0.1"}/seafhttp'/g" $EXPOSED_ROOT_DIR/conf/seahub_settings.py
+		fi
+	else
+		crudini --set $EXPOSED_ROOT_DIR/conf/ccnet.conf General SERVICE_URL "http://${SERVER_ADDRESS:-"127.0.0.1"}:8000"
+		sed -i '/^FILE_SERVER_ROOT = / d' $EXPOSED_ROOT_DIR/conf/seahub_settings.py
+	fi
+}
+
 wait_for_db() {
 	log_info "Trying to connect to the DB server"
 	DOCKERIZE_TIMEOUT=${DOCKERIZE_TIMEOUT:-"60s"}
@@ -172,6 +186,7 @@ if [[ ! -e $LATEST_SERVER_DIR ]]; then
 fi
 
 setup_ldap
+enable_ssl
 
 seafile start
 seahub start
