@@ -16,6 +16,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
  and _**a**_ is an increment to follow features and bug fix of this image
 
 * **latest** Development version, may be unstable
+* **6.1.2-2**  added reverse proxy configuration
 * **6.1.2-1**  added LDAP configuration (thanks to [zsoerenm](https://github.com/zsoerenm))
 * **6.1.2** updated Seafile version
 * **6.1.1** updated Seafile version
@@ -63,7 +64,9 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
 - #### Environment variables ####
   * **SERVER_NAME** (default is *seafile*): name of the server
 
-  * **SERVER_NAME** (default is *127.0.0.1*): IP or domain name of the server
+  * **SERVER_ADDRESS** (default is *127.0.0.1*): IP or domain name of the server
+  
+  * **REVERSE_PROXY_MODE** (value={HTTP, HTTPS}): when Seafile is running behind a reverse proxy, define if it uses http or https
 
   * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
 
@@ -110,6 +113,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
        - "8082:8082"
       environment:
        - SERVER_ADDRESS=my.domain.com
+       - REVERSE_PROXY_MODE=HTTPS
        - FASTCGI=true
        - MYSQL_SERVER=mariadb
        - MYSQL_USER=seafile

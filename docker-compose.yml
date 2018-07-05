@@ -8,6 +8,7 @@ services:
       - "8082:8082"
     environment:
       - SERVER_ADDRESS=my.domain.com
+      - REVERSE_PROXY_MODE=HTTPS
       - FASTCGI=true
       - MYSQL_SERVER=mariadb
       - MYSQL_USER=$SEAFILE_USER
