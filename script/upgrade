@@ -59,6 +59,9 @@ if [[ $NEWEST == $NEW_VERSION ]]; then
     fi
     move_media_directory
 
+    log_info "Deleting cache"
+    rm -rf /tmp/seahub_cache/
+
     log_info "Removing Seafile $CURRENT_VERSION"
     rm -rf "$SEAFILE_ROOT_DIR/seafile-server-$CURRENT_VERSION"
 
