@@ -23,6 +23,7 @@ RUN \
         python-mysqldb \
         python-urllib3 \
         python-memcache \
+        sqlite3 \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* /var/log/*

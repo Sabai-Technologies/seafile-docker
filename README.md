@@ -10,6 +10,8 @@ Seafile docker image based on Debian
 * Support FASTCGI mode
 * Upgrade Seafile with one simple command
 * Support LDAP configuration
+* Support reverse proxy configuration
+* Support MySQL and Sqlite
 
 ## Supported tags ##
 Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y.z**_ is the version of Seafile
@@ -25,11 +27,11 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
 * **6.0.7** this version is no more maintained
 
 ## Detailed Configuration ##
-- #### Ports ####
+- ### Ports ###
   - 8000 (seafile port)
   - 8082 (seahub port)
 
-- #### Volume ####
+- ### Volume ###
 
   - This image exposes only one volume
     * version 6.0.7 -> /home/seafile/
@@ -59,49 +61,42 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
           ├── seahub
           │   └── media
           │
-          └── seahub-data
+          ├── seahub-data
+          │
+          └── sqlite
+              └── seahub.db
+          
    ```       
-    * The folder **seafile/seahub/media** must be shared with Apache/nginx when running in FASTCGI mode
+    * The folder **seafile/seahub/media** must be shared with Apache/Nginx when running behind a reverse proxy
 
-- #### Environment variables ####
-  * **SERVER_NAME** (default is *seafile*): name of the server
+- ### Environment variables ###
+    - #### Seafile #####
+      * **SERVER_NAME** (default is *seafile*): name of the server
+      * **SERVER_ADDRESS** (default is *127.0.0.1*): IP or domain name of the server
+      * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
+      * **SEAFILE_ADMIN** (required): email for the admin account
+      * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
+    
+    - #### MySQL/Sqlite ##### 
+       By default Seafile is configured to use Sqlite unless **MYSQL_SERVER** is set
+      * **MYSQL_SERVER**:  MySQL/Maria DB Server name or ip
+      * **MYSQL_PORT** (default is *3306*): port used by the database server
+      * **MYSQL_ROOT_PASSWORD** (required if **MYSQL_SERVER** is set): root user is needed by Seafile to create its own databases
+      * **MYSQL_USER** (required if  **MYSQL_SERVER** is set): MYSQL user used by Seafile
+      * **MYSQL_USER_PASSWORD** (required i **MYSQL_SERVER** is set): password for MYSQL_USER
+      * **MYSQL_CCNET_DB** (default is *ccnet-db*): name of CCNET database
+      * **MYSQL_SEAFILE_DB** (default is *seafile-db*): name of SEAFILE database
+      * **MYSQL_SEAHUB_DB** (default is *seahub-db*): name of SEAHUB database
 
-  * **SERVER_ADDRESS** (default is *127.0.0.1*): IP or domain name of the server
-  
-  * **REVERSE_PROXY_MODE** (value={HTTP, HTTPS}): when Seafile is running behind a reverse proxy, define if it uses http or https
-
-  * **FASTCGI** (default is *false*): If true or True then run seafile in fastcgi mode
-
-  * **MYSQL_SERVER** (required):  MySQL/Maria DB Server name or ip, could be the name of the database service in docker-compose.yml file.
-
-  * **MYSQL_PORT** (default is *3306*): port used by the database server
-
-  * **MYSQL_ROOT_PASSWORD** (required): root user is needed by Seafile to create its own databases
-
-  * **MYSQL_USER** (required): MYSQL user used by Seafile
-
-  * **MYSQL_USER_PASSWORD** (required): password for MYSQL_USER
-
-  * **CCNET_DB** (default is *ccnet-db*): name of the database for CCNET
-
-  * **SEAFILE_DB** (default is *seafile-db*): name of the database for Seafile
-
-  * **SEAHUB_DB** (default is *seahub-db*): name of the database for CCNET
-
-  * **SEAFILE_ADMIN** (required): email for the admin account
-
-  * **SEAFILE_ADMIN_PASSWORD** (required): password for the admin account
-
-  * **LDAP_URL** (optional): LDAP URL (e.g. ldap://openldap)
-
-  * **LDAP_BASE** (required if **LDAP_URL** ist set): LDAP BASE (e.g. ou=people,dc=example,dc=org)
-
-  * **LDAP_LOGIN_ATTR** (required if **LDAP_URL** ist set): LDAP Login attribute (e.g. mail)
-
-  * **LDAP_USER_DN** (optional): LDAP user DN (e.g. cn=admin,dc=example,dc=org)
-
-  * **LDAP_PASSWORD** (optional): LDAP user password
-
+    - #### LDAP #####
+      * **LDAP_URL** : LDAP URL (e.g. ldap://openldap)
+      * **LDAP_BASE** (required if **LDAP_URL** is set): LDAP BASE (e.g. ou=people,dc=example,dc=org)
+      * **LDAP_LOGIN_ATTR** (required if **LDAP_URL** is set): LDAP Login attribute (e.g. mail)
+      * **LDAP_USER_DN** (optional): LDAP user DN (e.g. cn=admin,dc=example,dc=org)
+      * **LDAP_PASSWORD** (optional): LDAP user password
+    
+    - #### Reverse proxy #####
+      * **REVERSE_PROXY_MODE** (value=**HTTP** or **HTTPS**): configure Seafile to run behind a reverse proxy.
 
 ## docker-compose.yml example ##
   ```yml
@@ -188,5 +183,4 @@ where:
 Once you have upgraded the server, you can change the version of the image in the `docker-compose.yml` file to keep the change permanently.
 
 ## TODO ##
-* Manage SQLite
 * Expose some services like Garbage Collector
