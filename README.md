@@ -18,13 +18,16 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
  and _**a**_ is an increment to follow features and bug fix of this image
 
 * **latest** Development version, may be unstable
-* **6.3.1** updated Seafile version
-* **6.2.5** updated Seafile version
-* **6.1.2-2**  added reverse proxy configuration
-* **6.1.2-1**  added LDAP configuration (thanks to [zsoerenm](https://github.com/zsoerenm))
-* **6.1.2** updated Seafile version
-* **6.1.1** updated Seafile version
-* **6.0.7** this version is no more maintained
+* **6.3.1-1** Added Sqlite support<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Complete rewrite to easily add more configuration<br/>
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixed issue when upgrading (empty cache)
+* **6.3.1** Updated Seafile version
+* **6.2.5** Updated Seafile version
+* **6.1.2-2**  Added reverse proxy configuration
+* **6.1.2-1**  Added LDAP configuration (thanks to [zsoerenm](https://github.com/zsoerenm))
+* **6.1.2** Updated Seafile version
+* **6.1.1** Updated Seafile version
+* **6.0.7** This version is no more maintained
 
 ## Detailed Configuration ##
 - ### Ports ###
