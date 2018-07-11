@@ -7,7 +7,7 @@ Seafile docker image based on Debian
 ## Features ##
 * Auto configuration on first run, based on the manual setup described in the official  [documentation](https://manual.seafile.com/deploy/using_mysql.html)
 * Auto import previous installation, including non docker installation
-* Support FASTCGI mode
+* Support FASTCGI mode (this mode is no longer supported by Seafile since version [6.3.1](https://manual.seafile.com/changelog/server-changelog.html))
 * Upgrade Seafile with one simple command
 * Support LDAP configuration
 * Support reverse proxy configuration
@@ -18,6 +18,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
  and _**a**_ is an increment to follow features and bug fix of this image
 
 * **latest** Development version, may be unstable
+* **6.3.2** Updated Seafile version
 * **6.3.1-1** Added Sqlite support<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Complete rewrite to easily add more configuration<br/>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Fixed issue when upgrading (empty cache)
