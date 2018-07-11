@@ -27,7 +27,6 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
 * **6.1.2-1**  Added LDAP configuration (thanks to [zsoerenm](https://github.com/zsoerenm))
 * **6.1.2** Updated Seafile version
 * **6.1.1** Updated Seafile version
-* **6.0.7** This version is no more maintained
 
 ## Detailed Configuration ##
 - ### Ports ###
@@ -37,8 +36,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
 - ### Volume ###
 
   - This image exposes only one volume
-    * version 6.0.7 -> /home/seafile/
-    * from version 6.1.1 -> /seafile
+    *  /seafile
 
   - Directory Structure
   ``` seafile/
@@ -175,13 +173,13 @@ where:
 
 To upgrade the current version of Seafile server, you just have to run the following command:
 
-&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile upgrade 6.0.8```
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile upgrade 6.3.1```
 
 where:
 
   - **seafile** is the name of the service defined in *docker-compose.yml* file
 
-  - **6.0.8** is the new version
+  - **6.3.1** is the new version
   
 Once you have upgraded the server, you can change the version of the image in the `docker-compose.yml` file to keep the change permanently.
 
