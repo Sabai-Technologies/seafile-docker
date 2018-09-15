@@ -18,6 +18,7 @@ Tags, based on Semantic Versioning, follow the schema _**x.y.z-a**_ where _**x.y
  and _**a**_ is an increment to follow features and bug fix of this image
 
 * **latest** Development version, may be unstable
+* **6.3.4** Updated Seafile version
 * **6.3.3** Updated Seafile version
 * **6.3.2-1** Fixed issue in proxy configuration
 * **6.3.2** Updated Seafile version
