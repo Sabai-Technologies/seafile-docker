@@ -1,0 +1,22 @@
+#!/bin/bash
+
+source /usr/local/bin/common.sh
+
+log_info "Stopping Seahub"
+seahub stop
+
+log_info "Stopping Seafile"
+seafile stop
+
+log_info "Giving the server some time to shut down properly...."
+sleep 10
+
+$LATEST_SERVER_DIR/seaf-gc.sh
+
+log_info "Cleanup done"
+
+log_info "Starting Seafile"
+seafile start
+
+log_info "Starting Seahub"
+seahub start

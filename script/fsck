@@ -1,0 +1,5 @@
+#!/bin/bash
+
+source /usr/local/bin/common.sh
+
+$LATEST_SERVER_DIR/seaf-fsck.sh "$@"

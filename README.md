@@ -184,8 +184,20 @@ where:
   - **seafile** is the name of the service defined in *docker-compose.yml* file
 
   - **6.3.1** is the new version
-  
+
 Once you have upgraded the server, you can change the version of the image in the `docker-compose.yml` file to keep the change permanently.
 
-## TODO ##
-* Expose some services like Garbage Collector
+## Garbage Collector ##
+To remove unused data blocks, you can run the garbage collector:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile gc```
+
+It will stop Seafile server, run the garbage collector, and then restart Seafile
+
+## Check, Repair and Export Libraries ##
+Seafile comes with a tool to check the integrity, to repair the corrupted or to export libraries.
+To run this tools, you can execute:
+
+&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile fsck```
+
+It a simple shortcut to `seaf-fsck.sh`. The [manual](https://manual.seafile.com/maintain/seafile_fsck.html) describes all the options of this too
