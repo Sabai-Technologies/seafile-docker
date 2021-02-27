@@ -201,4 +201,4 @@ To run this tools, you can execute:
 
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;```docker-compose exec seafile fsck```
 
-It a simple shortcut to `seaf-fsck.sh`. The [manual](https://manual.seafile.com/maintain/seafile_fsck.html) describes all the options of this too
+It a simple shortcut to `seaf-fsck.sh`. The [manual](https://manual.seafile.com/maintain/seafile_fsck.html) describes all the options of this tool
