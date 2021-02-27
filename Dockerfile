@@ -1,4 +1,4 @@
-FROM bitnami/minideb:stretch
+FROM python:3.9-slim-buster
 
 ENV \
     LC_ALL=C \
@@ -7,7 +7,7 @@ ENV \
     EXPOSED_ROOT_DIR=/seafile \
     SEAFILE_ROOT_DIR=/opt/seafile \
     LATEST_SERVER_DIR=/opt/seafile/seafile-server-latest \
-    SEAFILE_VERSION=6.3.4 \
+    SEAFILE_VERSION=8.0.3 \
     SEAFILE_URL_PATTERN=https://download.seadrive.org/seafile-server_VERSION_x86-64.tar.gz
 
 RUN \
@@ -16,17 +16,29 @@ RUN \
         crudini \
         procps \
         wget \
-        python2.7 \
-        python-setuptools \
-        python-imaging \
-        python-ldap \
-        python-mysqldb \
-        python-urllib3 \
-        python-memcache \
+        build-essential \
         sqlite3 \
+        default-libmysqlclient-dev \
+        libmemcached-dev \
     && apt-get clean \
     && apt-get autoremove -y \
     && rm -rf /var/lib/apt/lists/* /var/log/*
+
+RUN python3 -m pip install --upgrade pip && rm -r /root/.cache/pip
+
+RUN \
+    pip3 install \
+           Pillow \
+           pylibmc \
+           captcha \
+           jinja2 \
+           sqlalchemy \
+           django-pylibmc \
+           django-simple-captcha \
+           python3-ldap \
+           future \
+           mysqlclient \
+    && rm -r /root/.cache/pip
 
 COPY ["script", "/usr/local/bin/"]
 
